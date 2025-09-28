@@ -4,25 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>NeuroArt HomePage</title>
-  <link rel="stylesheet" href="home.css" />
-  <!-- Import map: map bare 'three' specifier to the full module URL so example JSM files can import it -->
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
-    }
-  }
-  </script>
-
-  <!-- Three.js + loaders (CDN). Using full URLs for examples will now resolve the bare 'three' import via the importmap. -->
-  <script type="module">
-    import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
-    import { GLTFLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
-    import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
-
-    // Expose for home.js to import from window.threeDeps
-    window.threeDeps = { THREE, GLTFLoader, OrbitControls };
-  </script>
+  <link rel="stylesheet" href="home.css?v=3" />
+  <!-- (Optional) favicon -->
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#0f1115">
 </head>
 <body>
   <header class="topbar" role="banner">
@@ -47,6 +32,7 @@
     <div class="hint">drag to rotate • scroll to zoom • shift+drag to pan</div>
   </main>
 
-  <script type="module" src="home.js"></script>
+  <!-- Load your JS (ESM) -->
+  <script type="module" src="home.js?v=3"></script>
 </body>
 </html>
