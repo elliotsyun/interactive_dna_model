@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Interactive DNA</title>
+  <link rel="stylesheet" href="dna.css" />
+  <!-- 3Dmol.js (WebGL viewer) -->
+  <script src="https://3dmol.org/build/3Dmol-min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <h1>DNA Viewer</h1>
+    <div class="controls">
+      <button id="btn-reset" title="Reset view">Reset</button>
+      <label><input type="checkbox" id="cb-sticks" checked /> Sticks</label>
+      <label><input type="checkbox" id="cb-cartoon" checked /> Cartoon</label>
+      <label><input type="checkbox" id="cb-bases" checked /> Color bases</label>
+    </div>
+  </header>
+
+  <main class="layout">
+    <div id="viewer"></div>
+    <aside id="info">
+      <h2>Selection</h2>
+      <div id="info-content">
+        <p>Click a base to see details.</p>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="footer">
+    <small>Drag to rotate • Scroll to zoom • Shift+drag to pan</small>
+  </footer>
+
+  <script type="module" src="dna.js"></script>
+</body>
+</html>
