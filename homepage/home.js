@@ -48,6 +48,10 @@ const LOCAL_URL = '../assets/models/brain.glb?v=1';
 // 2) Fallback: reliable remote sample model (BrainStem GLB, MIT-licensed)
 const REMOTE_URL = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF-Binary/BrainStem.glb';
 
+// Configuration: for anatomically accurate models (NIH), preserve original model scale/units.
+// Set to true to auto-scale models to a convenient size for viewing.
+const AUTO_SCALE = false;
+
 const loader = new GLTFLoader();
 
 async function loadWithFallback() {
@@ -77,15 +81,42 @@ function loadOne(url) {
                     if (typeof o.material.roughness !== 'number') o.material.roughness = 0.7;
                 }
             });
-            // Center & scale
+            // Center the model (preserve original scale/units for anatomical accuracy).
             const box = new THREE.Box3().setFromObject(root);
             const size = new THREE.Vector3(); box.getSize(size);
             const center = new THREE.Vector3(); box.getCenter(center);
             root.position.sub(center);
-            const target = 1.6;
-            const scale = target / Math.max(size.x, size.y, size.z || 1);
-            root.scale.setScalar(scale);
+
+            // Optionally auto-scale for convenience; disabled by default to keep anatomical units.
+            if (AUTO_SCALE) {
+                const target = 1.6;
+                const scale = target / Math.max(size.x, size.y, size.z || 1);
+                root.scale.setScalar(scale);
+                console.log('Auto-scaled model for viewing (AUTO_SCALE=true).');
+            } else {
+                console.log('Preserving model scale (AUTO_SCALE=false).');
+            }
+
             scene.add(root);
+
+            // Fit camera to the loaded model without changing model scale.
+            (function fitCameraToObject(object, camera, controls, offset = 1.25) {
+                const box2 = new THREE.Box3().setFromObject(object);
+                const center2 = new THREE.Vector3(); box2.getCenter(center2);
+                const sphere = new THREE.Sphere(); box2.getBoundingSphere(sphere);
+                const radius = sphere.radius;
+                const fov = camera.fov * (Math.PI / 180);
+                const distance = Math.abs(radius / Math.sin(fov / 2)) * offset;
+                const dir = new THREE.Vector3().subVectors(camera.position, center2).normalize();
+                if (dir.lengthSq() === 0) dir.set(0, 0, 1);
+                camera.position.copy(dir.multiplyScalar(distance).add(center2));
+                camera.near = Math.max(0.1, distance - radius * 2);
+                camera.far = Math.max(1000, distance + radius * 2);
+                camera.updateProjectionMatrix();
+                controls.target.copy(center2);
+                controls.update();
+            })(root, camera, controls, 1.25);
+
             renderOnce();
             resolve();
         }, undefined, reject);

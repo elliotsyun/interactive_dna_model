@@ -5,8 +5,15 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>NeuroArt HomePage</title>
   <link rel="stylesheet" href="home.css?v=3" />
-  <!-- (Optional) favicon -->
-  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <!-- Import map: resolve bare specifier 'three' used by three.js example modules -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+    }
+  }
+  </script>
+  <!-- (Optional) favicon removed because ../assets/favicon.svg was returning 404 in dev; add a valid file if desired -->
   <meta name="theme-color" content="#0f1115">
 </head>
 <body>
