@@ -43,8 +43,8 @@ const key = new THREE.DirectionalLight(0xffffff, 0.8); key.position.set(1, 1, 2)
 const rim = new THREE.DirectionalLight(0x99bbff, 0.4); rim.position.set(-2, 0.5, -1.5); scene.add(rim);
 
 /* ========== Load Brain Model ========== */
-// 1) Try local file (put at: assets/models/brain.glb)
-const LOCAL_URL = '../assets/models/brain.glb?v=1';
+// 1) Try local file from repository root (for GitHub Pages)
+const LOCAL_URL = '/interactive_dna_model/assets/models/brain.glb?v=2';
 // 2) Fallback: reliable remote sample model (BrainStem GLB, MIT-licensed)
 const REMOTE_URL = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF-Binary/BrainStem.glb';
 
@@ -62,7 +62,7 @@ async function loadWithFallback() {
             try {
                 const first = String(args[0] || '');
                 if (first.includes('Unknown extension "KHR_materials_pbrSpecularGlossiness"')) return;
-            } catch (e) {}
+            } catch (e) { }
             origWarn.apply(console, args);
         };
 
@@ -74,7 +74,7 @@ async function loadWithFallback() {
         console.warn('Local brain.glb not found, using remote fallback.', e1);
         try {
             // restore console.warn in case loadOne threw before it could be restored
-            try { console.warn = origWarn; } catch (e) {}
+            try { console.warn = origWarn; } catch (e) { }
             await loadOne(REMOTE_URL);
             console.log('Loaded brain from remote fallback.');
         } catch (e2) {
@@ -85,6 +85,7 @@ async function loadWithFallback() {
 }
 
 function loadOne(url) {
+    console.log('Attempting to load model from:', url);
     return new Promise((resolve, reject) => {
         loader.load(url, (gltf) => {
             const root = gltf.scene;
@@ -112,6 +113,69 @@ function loadOne(url) {
             }
 
             scene.add(root);
+
+            // Add visual debug helper to show model bounds
+            const boxHelper = new THREE.Box3Helper(
+                new THREE.Box3().setFromObject(root),
+                new THREE.Color(0x00ff00)
+            );
+            scene.add(boxHelper);
+            console.log('Added box helper to visualize model bounds');
+
+            // Diagnostic + safety: collect stats and ensure the model is visible.
+            (function modelDiagnostics(object) {
+                const boxD = new THREE.Box3().setFromObject(object);
+                const sizeD = new THREE.Vector3(); boxD.getSize(sizeD);
+                const centerD = new THREE.Vector3(); boxD.getCenter(centerD);
+                const sphereD = new THREE.Sphere(); boxD.getBoundingSphere(sphereD);
+
+                // Count meshes, vertices, triangles
+                let meshCount = 0, vertexCount = 0, triCount = 0;
+                const materials = new Map();
+                object.traverse((n) => {
+                    if (n.isMesh && n.geometry) {
+                        meshCount++;
+                        const pos = n.geometry.attributes.position;
+                        if (pos) vertexCount += pos.count;
+                        if (n.geometry.index) triCount += n.geometry.index.count / 3;
+                        else if (pos) triCount += pos.count / 3;
+                        if (n.material) {
+                            const key = (n.material.name || n.material.type || 'material');
+                            materials.set(key, (materials.get(key) || 0) + 1);
+                        }
+                    }
+                });
+
+                const diag = {
+                    box: { min: boxD.min.toArray(), max: boxD.max.toArray(), size: sizeD.toArray(), center: centerD.toArray() },
+                    boundingSphereRadius: sphereD.radius,
+                    meshCount, vertexCount, triCount,
+                    materials: Array.from(materials.entries()),
+                    camera: { position: camera.position.toArray(), near: camera.near, far: camera.far },
+                };
+                console.group('Model diagnostics');
+                console.log('Diagnostics:', diag);
+                console.groupEnd();
+
+                // If bounding sphere radius is zero (or extremely small), auto-scale as a fallback
+                if (!sphereD.radius || sphereD.radius < 1e-6) {
+                    console.warn('Model bounding radius is zero; applying AUTO_SCALE fallback to make it visible.');
+                    const fallbackTarget = 1.6;
+                    const scale = fallbackTarget / Math.max(sizeD.x, sizeD.y, sizeD.z || 1);
+                    object.scale.setScalar(scale);
+                }
+
+                // Add a small floating button to re-print diagnostics on demand
+                if (!document.getElementById('model-info-btn')) {
+                    const b = document.createElement('button');
+                    b.id = 'model-info-btn';
+                    b.textContent = 'Model Info';
+                    b.style.cssText = 'position:fixed;right:12px;bottom:12px;z-index:9999;padding:.4rem .6rem;border-radius:.35rem;background:#121214;color:#fff;border:none;cursor:pointer;opacity:0.85';
+                    b.title = 'Print model diagnostics to console';
+                    b.addEventListener('click', () => console.log('Model diagnostics (on demand):', diag));
+                    document.body.appendChild(b);
+                }
+            })(root);
 
             // Fit camera to the loaded model without changing model scale.
             (function fitCameraToObject(object, camera, controls, offset = 1.25) {
