@@ -24,24 +24,29 @@ body {
 }
 
 .topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(15, 17, 21, 0.95);
+    padding: 0.5rem 1rem;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: .6rem 1rem;
-    background: var(--panel);
-    border-bottom: 1px solid var(--border);
+    gap: 1rem;
+    z-index: 100;
+    backdrop-filter: blur(8px);
 }
 
 .topbar h1 {
     margin: 0;
-    font-size: 1rem;
-    letter-spacing: .02em;
+    font-size: 1.25rem;
 }
 
 .controls {
     display: flex;
     gap: .75rem;
     align-items: center;
+    margin-left: auto;
     color: var(--muted);
 }
 
@@ -64,10 +69,14 @@ body {
 }
 
 .layout {
+    position: fixed;
+    top: 56px;
+    left: 0;
+    right: 0;
+    bottom: 0;
     display: grid;
     grid-template-columns: 1fr 300px;
     gap: 0;
-    height: calc(100vh - 96px);
 }
 
 #viewer {
@@ -120,7 +129,78 @@ body {
 /* Import base styles */
 @import url('../homepage/home.css');
 
-/* DNA-specific styles that don't conflict with home.css */
+/* Hamburger menu */
+.hamburger {
+    padding: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: #fff;
+    transition: 0.2s;
+}
+
+/* Side menu */
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 250px;
+    background: rgba(15, 17, 21, 0.95);
+    transform: translateX(-100%);
+    transition: 0.3s;
+    z-index: 200;
+    backdrop-filter: blur(8px);
+}
+
+.side-menu[aria-hidden="false"] {
+    transform: translateX(0);
+}
+
+.menu-header {
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.side-menu ul {
+    list-style: none;
+    padding: 1rem;
+    margin: 0;
+}
+
+.side-menu a {
+    color: #fff;
+    text-decoration: none;
+    padding: 0.5rem;
+    display: block;
+    transition: 0.2s;
+}
+
+.side-menu a:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
 .controls {
     display: flex;
     gap: .75rem;

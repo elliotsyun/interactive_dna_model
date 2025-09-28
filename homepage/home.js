@@ -232,18 +232,9 @@ function animate() {
         scene.position.sub(modelCenter);
         scene.rotation.y += 0.002;
         scene.position.add(modelCenter);
-
-        // Do the same for scene2
-        const modelCenter2 = new THREE.Vector3();
-        const box2 = new THREE.Box3().setFromObject(scene2);
-        box2.getCenter(modelCenter2);
-
-        scene2.position.sub(modelCenter2);
-        scene2.rotation.y += 0.002;
-        scene2.position.add(modelCenter2);
     }
     controls.update();
-    updateScenes();
+    renderer.render(scene, camera);
 }
 function renderOnce() { controls.update(); renderer.render(scene, camera); }
 animate();
