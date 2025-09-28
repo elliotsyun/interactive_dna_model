@@ -59,9 +59,9 @@ scene.add(rim);
 /* =========================
    Load Brain Model (remote)
    ========================= */
-// MIT-licensed sample model hosted by Khronos on GitHub
-const BRAIN_URL =
-    'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF-Binary/BrainStem.glb';
+// Prefer a local, checked-in brain model so the app uses a reproducible, accurate asset.
+// If you want to try a different model, replace this path with another .glb in assets/models/.
+const BRAIN_URL = '../assets/models/brain.glb';
 
 const loader = new GLTFLoader();
 loader.load(
@@ -86,11 +86,37 @@ loader.load(
         box.getCenter(center);
         root.position.sub(center);
 
-        const targetSize = 1.6; // Controls overall model size in view
+    const targetSize = 1.6; // Controls overall model size in view (tweak if model appears too small/large)
         const scale = targetSize / Math.max(size.x, size.y, size.z || 1);
         root.scale.setScalar(scale);
 
         scene.add(root);
+        // Fit camera and controls to the loaded model so it fills the view.
+        (function fitCameraToObject(object, camera, controls, offset = 1.25) {
+            // Compute bounding box / sphere in world space
+            const box = new THREE.Box3().setFromObject(object);
+            const center = new THREE.Vector3();
+            box.getCenter(center);
+            const sphere = new THREE.Sphere();
+            box.getBoundingSphere(sphere);
+
+            // Compute a distance that fits the whole object in the camera's fov
+            const radius = sphere.radius;
+            const fov = camera.fov * (Math.PI / 180);
+            const distance = Math.abs(radius / Math.sin(fov / 2)) * offset;
+
+            // Move camera along its current forward vector so the object is centered
+            const dir = new THREE.Vector3().subVectors(camera.position, center).normalize();
+            if (dir.lengthSq() === 0) dir.set(0, 0, 1);
+            camera.position.copy(dir.multiplyScalar(distance).add(center));
+            camera.near = Math.max(0.1, distance - radius * 2);
+            camera.far = Math.max(1000, distance + radius * 2);
+            camera.updateProjectionMatrix();
+
+            // Point controls at the model center
+            controls.target.copy(center);
+            controls.update();
+        })(root, camera, controls, 1.25);
     },
     undefined,
     (err) => {
