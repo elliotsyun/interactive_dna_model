@@ -5,7 +5,16 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>NeuroArt HomePage</title>
   <link rel="stylesheet" href="home.css" />
-  <!-- Three.js + loaders (CDN) -->
+  <!-- Import map: map bare 'three' specifier to the full module URL so example JSM files can import it -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+    }
+  }
+  </script>
+
+  <!-- Three.js + loaders (CDN). Using full URLs for examples will now resolve the bare 'three' import via the importmap. -->
   <script type="module">
     import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
     import { GLTFLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
