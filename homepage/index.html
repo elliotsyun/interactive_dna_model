@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NeuroArt HomePage</title>
+  <link rel="stylesheet" href="home.css" />
+  <!-- Three.js + loaders (CDN) -->
+  <script type="module">
+    import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+    import { GLTFLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
+    import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+
+    // Expose for home.js to import from window.threeDeps
+    window.threeDeps = { THREE, GLTFLoader, OrbitControls };
+  </script>
+</head>
+<body>
+  <header class="topbar" role="banner">
+    <button id="hamburger" class="hamburger" aria-label="Open menu" aria-controls="side-menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <h1>NeuroArt HomePage</h1>
+  </header>
+
+  <nav id="side-menu" class="side-menu" aria-hidden="true">
+    <div class="menu-header">
+      <strong>Menu</strong>
+      <button id="close-menu" class="close" aria-label="Close menu">×</button>
+    </div>
+    <ul>
+      <li><a href="../dnapage/index.html">DNA Viewer</a></li>
+    </ul>
+  </nav>
+
+  <main class="stage">
+    <canvas id="brain-canvas" aria-label="3D brain model" role="img"></canvas>
+    <div class="hint">drag to rotate • scroll to zoom • shift+drag to pan</div>
+  </main>
+
+  <script type="module" src="home.js"></script>
+</body>
+</html>
