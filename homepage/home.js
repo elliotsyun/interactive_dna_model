@@ -28,12 +28,12 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0f1115);
 
-// Add visual helpers
-const axesHelper = new THREE.AxesHelper(2); // Red=X, Green=Y, Blue=Z
-scene.add(axesHelper);
-const grid = new THREE.GridHelper(10, 10, 0x444444, 0x222222);
-grid.position.y = -2;
-scene.add(grid);
+// Remove axes and grid helpers
+// const axesHelper = new THREE.AxesHelper(2);
+// scene.add(axesHelper);
+// const grid = new THREE.GridHelper(10, 10, 0x444444, 0x222222);
+// grid.position.y = -2;
+// scene.add(grid);
 
 const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
 camera.position.set(0, 0.6, 2.2);
@@ -50,56 +50,19 @@ const key = new THREE.DirectionalLight(0xffffff, 0.8); key.position.set(1, 1, 2)
 const rim = new THREE.DirectionalLight(0x99bbff, 0.4); rim.position.set(-2, 0.5, -1.5); scene.add(rim);
 
 /* ========== Load Brain Models ========== */
-// Known working test model (skull from Khronos sample models)
-const TEST_URL = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Skull/glTF/Skull.gltf';
-// Your local model
-const LOCAL_URL = '/interactive_dna_model/assets/models/brain.glb?v=3';
+// Model path for GitHub Pages (and local development)
+const LOCAL_URL = '/interactive_dna_model/assets/models/brain.glb?v=4';
 
-// Create two scenes to compare models
-const scene2 = new THREE.Scene();
-scene2.background = new THREE.Color(0x0f1115);
-
-// Split view horizontally
-renderer.setScissorTest(true);
-function updateScenes() {
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
-    const mid = width / 2;
-
-    // Left half - test model
-    renderer.setScissor(0, 0, mid, height);
-    renderer.setViewport(0, 0, mid, height);
-    renderer.render(scene, camera);
-
-    // Right half - your model
-    renderer.setScissor(mid, 0, mid, height);
-    renderer.setViewport(mid, 0, mid, height);
-    renderer.render(scene2, camera);
-}
-
-// Configuration: for anatomically accurate models (NIH), preserve original model scale/units.
-// Set to true to auto-scale models to a convenient size for viewing.
-const AUTO_SCALE = true; // Temporarily enabled to ensure model is visible
-
+// Load your model
 const loader = new GLTFLoader();
 
 async function loadWithFallback() {
-    // Load test model into left scene
     try {
-        console.log('Loading test model...');
-        await loadOne(TEST_URL, scene, 'Test Model');
-    } catch (e1) {
-        console.error('Failed to load test model:', e1);
-        addPlaceholder('Test model failed to load', scene);
-    }
-
-    // Load your model into right scene
-    try {
-        console.log('Loading your model...');
-        await loadOne(LOCAL_URL, scene2, 'Your Model');
-    } catch (e2) {
-        console.error('Failed to load your model:', e2);
-        addPlaceholder('Your model failed to load', scene2);
+        console.log('Loading brain model...');
+        await loadOne(LOCAL_URL, scene, 'Your Model');
+    } catch (error) {
+        console.error('Failed to load brain model:', error);
+        addPlaceholder('Brain model failed to load', scene);
     }
 }
 
@@ -120,16 +83,6 @@ function loadOne(url, targetScene, label = 'Model') {
             const size = new THREE.Vector3(); box.getSize(size);
             const center = new THREE.Vector3(); box.getCenter(center);
             root.position.sub(center);
-
-            // Optionally auto-scale for convenience; disabled by default to keep anatomical units.
-            if (AUTO_SCALE) {
-                const target = 1.6;
-                const scale = target / Math.max(size.x, size.y, size.z || 1);
-                root.scale.setScalar(scale);
-                console.log('Auto-scaled model for viewing (AUTO_SCALE=true).');
-            } else {
-                console.log('Preserving model scale (AUTO_SCALE=false).');
-            }
 
             targetScene.add(root);
 
@@ -270,8 +223,24 @@ let autoRotate = !prefersReduced;
 function animate() {
     requestAnimationFrame(animate);
     if (autoRotate) {
+        // Rotate around model's center instead of scene origin
+        const modelCenter = new THREE.Vector3();
+        const box = new THREE.Box3().setFromObject(scene);
+        box.getCenter(modelCenter);
+
+        // Move to center, rotate, move back
+        scene.position.sub(modelCenter);
         scene.rotation.y += 0.002;
+        scene.position.add(modelCenter);
+
+        // Do the same for scene2
+        const modelCenter2 = new THREE.Vector3();
+        const box2 = new THREE.Box3().setFromObject(scene2);
+        box2.getCenter(modelCenter2);
+
+        scene2.position.sub(modelCenter2);
         scene2.rotation.y += 0.002;
+        scene2.position.add(modelCenter2);
     }
     controls.update();
     updateScenes();
