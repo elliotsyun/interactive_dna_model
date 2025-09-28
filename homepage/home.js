@@ -28,6 +28,13 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0f1115);
 
+// Add visual helpers
+const axesHelper = new THREE.AxesHelper(2); // Red=X, Green=Y, Blue=Z
+scene.add(axesHelper);
+const grid = new THREE.GridHelper(10, 10, 0x444444, 0x222222);
+grid.position.y = -2;
+scene.add(grid);
+
 const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
 camera.position.set(0, 0.6, 2.2);
 
@@ -50,7 +57,7 @@ const REMOTE_URL = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-M
 
 // Configuration: for anatomically accurate models (NIH), preserve original model scale/units.
 // Set to true to auto-scale models to a convenient size for viewing.
-const AUTO_SCALE = false;
+const AUTO_SCALE = true; // Temporarily enabled to ensure model is visible
 
 const loader = new GLTFLoader();
 
@@ -154,7 +161,22 @@ function loadOne(url) {
                     camera: { position: camera.position.toArray(), near: camera.near, far: camera.far },
                 };
                 console.group('Model diagnostics');
-                console.log('Diagnostics:', diag);
+                console.log('Model dimensions:', {
+                    width: sizeD.x.toFixed(2),
+                    height: sizeD.y.toFixed(2),
+                    depth: sizeD.z.toFixed(2),
+                    radius: sphereD.radius.toFixed(2)
+                });
+                console.log('Mesh stats:', {
+                    meshes: meshCount,
+                    vertices: vertexCount,
+                    triangles: triCount
+                });
+                console.log('Position in space:', {
+                    center: centerD.toArray().map(v => v.toFixed(2)),
+                    scale: object.scale.toArray().map(v => v.toFixed(2))
+                });
+                console.log('Full diagnostics:', diag);
                 console.groupEnd();
 
                 // If bounding sphere radius is zero (or extremely small), auto-scale as a fallback
