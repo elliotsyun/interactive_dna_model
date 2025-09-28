@@ -49,11 +49,33 @@ scene.add(new THREE.AmbientLight(0xffffff, 0.6));
 const key = new THREE.DirectionalLight(0xffffff, 0.8); key.position.set(1, 1, 2); scene.add(key);
 const rim = new THREE.DirectionalLight(0x99bbff, 0.4); rim.position.set(-2, 0.5, -1.5); scene.add(rim);
 
-/* ========== Load Brain Model ========== */
-// 1) Try local file from repository root (for GitHub Pages)
-const LOCAL_URL = '/interactive_dna_model/assets/models/brain.glb?v=2';
-// 2) Fallback: reliable remote sample model (BrainStem GLB, MIT-licensed)
-const REMOTE_URL = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF-Binary/BrainStem.glb';
+/* ========== Load Brain Models ========== */
+// Known working test model (skull from Khronos sample models)
+const TEST_URL = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Skull/glTF/Skull.gltf';
+// Your local model
+const LOCAL_URL = '/interactive_dna_model/assets/models/brain.glb?v=3';
+
+// Create two scenes to compare models
+const scene2 = new THREE.Scene();
+scene2.background = new THREE.Color(0x0f1115);
+
+// Split view horizontally
+renderer.setScissorTest(true);
+function updateScenes() {
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+    const mid = width / 2;
+
+    // Left half - test model
+    renderer.setScissor(0, 0, mid, height);
+    renderer.setViewport(0, 0, mid, height);
+    renderer.render(scene, camera);
+
+    // Right half - your model
+    renderer.setScissor(mid, 0, mid, height);
+    renderer.setViewport(mid, 0, mid, height);
+    renderer.render(scene2, camera);
+}
 
 // Configuration: for anatomically accurate models (NIH), preserve original model scale/units.
 // Set to true to auto-scale models to a convenient size for viewing.
@@ -62,36 +84,26 @@ const AUTO_SCALE = true; // Temporarily enabled to ensure model is visible
 const loader = new GLTFLoader();
 
 async function loadWithFallback() {
+    // Load test model into left scene
     try {
-        // Temporarily suppress GLTFLoader warning about KHR_materials_pbrSpecularGlossiness
-        const origWarn = console.warn;
-        console.warn = (...args) => {
-            try {
-                const first = String(args[0] || '');
-                if (first.includes('Unknown extension "KHR_materials_pbrSpecularGlossiness"')) return;
-            } catch (e) { }
-            origWarn.apply(console, args);
-        };
-
-        await loadOne(LOCAL_URL);
-        // restore
-        console.warn = origWarn;
-        console.log('Loaded brain from local file.');
+        console.log('Loading test model...');
+        await loadOne(TEST_URL, scene, 'Test Model');
     } catch (e1) {
-        console.warn('Local brain.glb not found, using remote fallback.', e1);
-        try {
-            // restore console.warn in case loadOne threw before it could be restored
-            try { console.warn = origWarn; } catch (e) { }
-            await loadOne(REMOTE_URL);
-            console.log('Loaded brain from remote fallback.');
-        } catch (e2) {
-            console.error('Failed to load remote model:', e2);
-            addPlaceholder('Could not load brain model. Showing placeholder.');
-        }
+        console.error('Failed to load test model:', e1);
+        addPlaceholder('Test model failed to load', scene);
+    }
+
+    // Load your model into right scene
+    try {
+        console.log('Loading your model...');
+        await loadOne(LOCAL_URL, scene2, 'Your Model');
+    } catch (e2) {
+        console.error('Failed to load your model:', e2);
+        addPlaceholder('Your model failed to load', scene2);
     }
 }
 
-function loadOne(url) {
+function loadOne(url, targetScene, label = 'Model') {
     console.log('Attempting to load model from:', url);
     return new Promise((resolve, reject) => {
         loader.load(url, (gltf) => {
@@ -119,7 +131,7 @@ function loadOne(url) {
                 console.log('Preserving model scale (AUTO_SCALE=false).');
             }
 
-            scene.add(root);
+            targetScene.add(root);
 
             // Add visual debug helper to show model bounds
             const boxHelper = new THREE.Box3Helper(
@@ -257,9 +269,12 @@ let autoRotate = !prefersReduced;
 
 function animate() {
     requestAnimationFrame(animate);
-    if (autoRotate) scene.rotation.y += 0.002;
+    if (autoRotate) {
+        scene.rotation.y += 0.002;
+        scene2.rotation.y += 0.002;
+    }
     controls.update();
-    renderer.render(scene, camera);
+    updateScenes();
 }
 function renderOnce() { controls.update(); renderer.render(scene, camera); }
 animate();
