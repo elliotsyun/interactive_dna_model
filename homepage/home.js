@@ -56,11 +56,25 @@ const loader = new GLTFLoader();
 
 async function loadWithFallback() {
     try {
+        // Temporarily suppress GLTFLoader warning about KHR_materials_pbrSpecularGlossiness
+        const origWarn = console.warn;
+        console.warn = (...args) => {
+            try {
+                const first = String(args[0] || '');
+                if (first.includes('Unknown extension "KHR_materials_pbrSpecularGlossiness"')) return;
+            } catch (e) {}
+            origWarn.apply(console, args);
+        };
+
         await loadOne(LOCAL_URL);
+        // restore
+        console.warn = origWarn;
         console.log('Loaded brain from local file.');
     } catch (e1) {
         console.warn('Local brain.glb not found, using remote fallback.', e1);
         try {
+            // restore console.warn in case loadOne threw before it could be restored
+            try { console.warn = origWarn; } catch (e) {}
             await loadOne(REMOTE_URL);
             console.log('Loaded brain from remote fallback.');
         } catch (e2) {
