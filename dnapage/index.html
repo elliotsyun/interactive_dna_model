@@ -1,53 +1,56 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Interactive DNA</title>
-<link rel="stylesheet" href="dna.css?v=4" />
-<script src="https://3dmol.org/build/3Dmol-min.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Interactive DNA</title>
+  <link rel="stylesheet" href="dna.css?v=4" />
+  <script src="https://3dmol.org/build/3Dmol-min.js"></script>
 </head>
+
 <body>
-<header class="topbar" role="banner">
-<button id="hamburger" class="hamburger" aria-label="Open menu" aria-controls="side-menu" aria-expanded="false">
-<span></span><span></span><span></span>
-</button>
-<h1>DNA Viewer</h1>
-<div class="controls">
-<a href="../homepage/index.html" class="link-home">← Home</a>
-<button id="btn-reset" title="Reset view">Reset</button>
-<label><input type="checkbox" id="cb-sticks" checked /> Sticks</label>
-<label><input type="checkbox" id="cb-cartoon" checked /> Cartoon</label>
-<label><input type="checkbox" id="cb-bases" checked /> Color bases</label>
-</div>
-</header>
+  <header class="topbar" role="banner">
+    <button id="hamburger" class="hamburger" aria-label="Open menu" aria-controls="side-menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <h1>DNA Viewer</h1>
+    <div class="controls">
+      <button id="btn-reset" title="Reset view">Reset</button>
+      <label><input type="checkbox" id="cb-sticks" checked /> Sticks</label>
+      <label><input type="checkbox" id="cb-cartoon" checked /> Cartoon</label>
+      <label><input type="checkbox" id="cb-bases" checked /> Color bases</label>
+    </div>
+  </header>
 
 
-<nav id="side-menu" class="side-menu" aria-hidden="true">
-<div class="menu-header">
-<strong>Menu</strong>
-<button id="close-menu" class="close" aria-label="Close menu">×</button>
-</div>
-<ul>
-<li><a href="../homepage/index.html">Home</a></li>
-</ul>
-</nav>
+  <nav id="side-menu" class="side-menu" aria-hidden="true">
+    <div class="menu-header">
+      <strong>Menu</strong>
+      <button id="close-menu" class="close" aria-label="Close menu">×</button>
+    </div>
+    <ul>
+    </ul>
+  </nav>
 
 
-<main class="layout">
-<div id="viewer"></div>
-<aside id="info">
-<h2>Selection</h2>
-<div id="info-content"><p>Click a base to see details.</p></div>
-</aside>
-</main>
+  <main class="layout">
+    <div id="viewer"></div>
+    <aside id="info">
+      <h2>Selection</h2>
+      <div id="info-content">
+        <p>Click a base to see details.</p>
+      </div>
+    </aside>
+  </main>
 
 
-<footer class="footer">
-<small>Drag to rotate • Scroll to zoom • Shift+drag to pan</small>
-</footer>
+  <footer class="footer">
+    <small>Drag to rotate • Scroll to zoom • Shift+drag to pan</small>
+  </footer>
 
 
-<script type="module" src="dna.js?v=4"></script>
+  <script type="module" src="dna.js?v=4"></script>
 </body>
+
 </html>
