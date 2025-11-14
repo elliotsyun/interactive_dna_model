@@ -12,31 +12,57 @@
 
 <body>
   <header class="topbar" role="banner">
-    <button id="hamburger" class="hamburger" aria-label="Open menu" aria-controls="side-menu" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
     <h1>DNA Viewer</h1>
     <div class="controls">
       <button id="btn-reset" title="Reset view">Reset</button>
-      <label><input type="checkbox" id="cb-sticks" checked /> Sticks</label>
-      <label><input type="checkbox" id="cb-cartoon" checked /> Cartoon</label>
-      <label><input type="checkbox" id="cb-bases" checked /> Color bases</label>
+
+      <!-- Representation Mode -->
+      <div class="control-group">
+        <label>Style:</label>
+        <select id="representation">
+          <option value="sticks">Sticks</option>
+          <option value="ball-stick">Ball & Stick</option>
+          <option value="lines">Lines</option>
+          <option value="spacefill">Space Fill</option>
+        </select>
+      </div>
+
+      <!-- Coloring Scheme -->
+      <div class="control-group">
+        <label>Color:</label>
+        <select id="colorscheme">
+          <option value="default">Default</option>
+          <option value="spectrum">Spectrum</option>
+          <option value="chain">By Chain</option>
+          <option value="chainHetatm">By Element</option>
+          <option value="amino">Amino Acid</option>
+          <option value="shapely">Shapely</option>
+        </select>
+      </div>
+
+      <!-- Background -->
+      <div class="control-group">
+        <label>Background:</label>
+        <select id="background">
+          <option value="black">Black</option>
+          <option value="white">White</option>
+          <option value="dark-gray">Dark Gray</option>
+        </select>
+      </div>
+
+      <!-- Show Water -->
+      <label class="checkbox-label">
+        <input type="checkbox" id="show-water"> Water
+      </label>
     </div>
   </header>
 
-
-  <nav id="side-menu" class="side-menu" aria-hidden="true">
-    <div class="menu-header">
-      <strong>Menu</strong>
-      <button id="close-menu" class="close" aria-label="Close menu">×</button>
-    </div>
-    <ul>
-    </ul>
-  </nav>
-
-
   <main class="layout">
-    <div id="viewer"></div>
+    <div id="viewer">
+      <div id="orientation-guide">
+        <canvas id="orientation-canvas" width="80" height="80"></canvas>
+      </div>
+    </div>
     <aside id="info">
       <h2>Selection</h2>
       <div id="info-content">
@@ -47,7 +73,7 @@
 
 
   <footer class="footer">
-    <small>Drag to rotate • Scroll to zoom • Shift+drag to pan</small>
+    <small>Click+drag to rotate • Scroll to zoom • Shift+drag to pan</small>
   </footer>
 
 
