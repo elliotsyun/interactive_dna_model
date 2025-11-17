@@ -1,83 +1,28 @@
-<!doctype html>
-<html lang="en">
+<!--python3 -m http.server 8000-->
+<!--using 1BNA model -->
+<!DOCTYPE html>
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Interactive DNA</title>
-  <link rel="stylesheet" href="dna.css?v=4" />
-  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
-  <script src="https://3dmol.org/build/3Dmol-min.js"></script>
-</head>
+  <meta charset="UTF-8">
+  <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
+  <title> NeuroArt Lab DNA Viewer </title>
+
+  <link rel="icon" type="image/png" href="assets/dna_favicon.png">
+  <link rel="stylesheet" href="dna.css">
 
 <body>
-  <header class="topbar" role="banner">
-    <h1>DNA Viewer</h1>
-    <div class="controls">
-      <button id="btn-reset" title="Reset view">Reset</button>
-
-      <!-- Representation Mode -->
-      <div class="control-group">
-        <label>Style:</label>
-        <select id="representation">
-          <option value="sticks">Sticks</option>
-          <option value="ball-stick">Ball & Stick</option>
-          <option value="lines">Lines</option>
-          <option value="spacefill">Space Fill</option>
-        </select>
-      </div>
-
-      <!-- Coloring Scheme -->
-      <div class="control-group">
-        <label>Color:</label>
-        <select id="colorscheme">
-          <option value="default">Default</option>
-          <option value="spectrum">Spectrum</option>
-          <option value="chain">By Chain</option>
-          <option value="chainHetatm">By Element</option>
-          <option value="amino">Amino Acid</option>
-          <option value="shapely">Shapely</option>
-        </select>
-      </div>
-
-      <!-- Background -->
-      <div class="control-group">
-        <label>Background:</label>
-        <select id="background">
-          <option value="black">Black</option>
-          <option value="white">White</option>
-          <option value="dark-gray">Dark Gray</option>
-        </select>
-      </div>
-
-      <!-- Show Water -->
-      <label class="checkbox-label">
-        <input type="checkbox" id="show-water"> Water
-      </label>
-    </div>
+  <header>
+    <h1>NeuroArt Lab DNA Viewer</h1>
   </header>
 
-  <main class="layout">
-    <div id="viewer">
-      <div id="orientation-guide">
-        <canvas id="orientation-canvas" width="80" height="80"></canvas>
-      </div>
-    </div>
-    <aside id="info">
-      <h2>Selection</h2>
-      <div id="info-content">
-        <p>Click a base to see details.</p>
-      </div>
-    </aside>
-  </main>
+  <div id="window" class="dna-container"></div>
 
-
-  <footer class="footer">
-    <small>Click+drag to rotate • Scroll to zoom • Shift+drag to pan</small>
+  <footer>
+    <p>Jack Quan 2025</p>
   </footer>
 
+  <script src="app.js"></script>
 
-  <script type="module" src="dna.js?v=4"></script>
 </body>
 
 </html>
