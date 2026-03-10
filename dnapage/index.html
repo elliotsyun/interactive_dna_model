@@ -1,35 +1,38 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Interactive DNA</title>
-  <link rel="stylesheet" href="dna.css?v=4" />
+  <title>Interactive DNA — NeuroArt Research Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="dna.css" />
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <script src="https://3dmol.org/build/3Dmol-min.js"></script>
 </head>
-
 <body>
   <header class="topbar" role="banner">
-    <h1>DNA Viewer</h1>
+    <div class="brand">
+      <span class="brand-helix">⬡</span>
+      <h1>DNA<span class="brand-sub">viewer</span></h1>
+    </div>
     <div class="controls">
-      <button id="btn-reset" title="Reset view">Reset</button>
-
-      <!-- Representation Mode -->
+      <button id="btn-reset" title="Smooth reset view" class="btn-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Reset
+      </button>
       <div class="control-group">
-        <label>Style:</label>
+        <label>Style</label>
         <select id="representation">
           <option value="sticks">Sticks</option>
-          <option value="ball-stick">Ball & Stick</option>
+          <option value="ball-stick">Ball &amp; Stick</option>
           <option value="lines">Lines</option>
           <option value="spacefill">Space Fill</option>
+          <option value="cartoon">Cartoon</option>
         </select>
       </div>
-
-      <!-- Coloring Scheme -->
       <div class="control-group">
-        <label>Color:</label>
+        <label>Color</label>
         <select id="colorscheme">
           <option value="default">Default</option>
           <option value="spectrum">Spectrum</option>
@@ -39,45 +42,97 @@
           <option value="shapely">Shapely</option>
         </select>
       </div>
-
-      <!-- Background -->
       <div class="control-group">
-        <label>Background:</label>
+        <label>Background</label>
         <select id="background">
           <option value="black">Black</option>
           <option value="white">White</option>
           <option value="dark-gray">Dark Gray</option>
         </select>
       </div>
-
-      <!-- Show Water -->
-      <label class="checkbox-label">
-        <input type="checkbox" id="show-water"> Water
+      <label class="toggle-label" title="Show Watson-Crick hydrogen bonds">
+        <input type="checkbox" id="show-hbonds">
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        <span>H-Bonds</span>
+      </label>
+      <label class="toggle-label" title="Highlight major and minor grooves">
+        <input type="checkbox" id="show-grooves">
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        <span>Grooves</span>
+      </label>
+      <label class="toggle-label">
+        <input type="checkbox" id="show-water">
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        <span>Water</span>
       </label>
     </div>
   </header>
 
   <main class="layout">
     <div id="viewer">
-      <div id="orientation-guide">
-        <canvas id="orientation-canvas" width="80" height="80"></canvas>
+      <div id="xyz-nav">
+        <canvas id="orientation-canvas" width="72" height="72"></canvas>
+      </div>
+      <div id="zoom-control">
+        <button id="zoom-in"  class="zoom-btn" title="Zoom in">+</button>
+        <button id="zoom-out" class="zoom-btn" title="Zoom out">−</button>
+      </div>
+      <div id="chem-legend">
+        <div class="chem-legend-title">Chemical Anatomy</div>
+        <div class="chem-legend-grid">
+          <span class="chem-chip" style="background:#909090"></span><span>C Carbon</span>
+          <span class="chem-chip" style="background:#ff0d0d"></span><span>O Oxygen</span>
+          <span class="chem-chip" style="background:#3050f8"></span><span>N Nitrogen</span>
+          <span class="chem-chip" style="background:#ff8000"></span><span>P Phosphorus</span>
+        </div>
+      </div>
+      <div id="legend" class="legend hidden">
+        <div class="legend-title">Color Key</div>
+        <div id="legend-items"></div>
+      </div>
+      <div id="loading-overlay">
+        <div class="loader-wrap">
+          <div class="helix-loader">
+            <div class="helix-strand strand-a"></div>
+            <div class="helix-strand strand-b"></div>
+          </div>
+          <p>Fetching 1BNA from RCSB…</p>
+        </div>
       </div>
     </div>
+
     <aside id="info">
-      <h2>Selection</h2>
+      <div class="info-header">
+        <h2>Selection</h2>
+        <div class="info-badge" id="info-badge">—</div>
+      </div>
       <div id="info-content">
-        <p>Click a base to see details.</p>
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v3M11 14h.01"/>
+            </svg>
+          </div>
+          <p>Click any atom in the model to inspect it.</p>
+        </div>
+      </div>
+      <div id="measure-section" class="hidden">
+        <button id="btn-measure" class="btn-measure">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>
+          Measure to Helix Center
+        </button>
+        <div id="measure-result" class="measure-result hidden"></div>
       </div>
     </aside>
   </main>
 
-
   <footer class="footer">
-    <small>Click+drag to rotate • Scroll to zoom • Shift+drag to pan</small>
+    <span>Click + drag to rotate</span>
+    <span class="footer-dot">·</span>
+    <span>Scroll to zoom</span>
+    <span class="footer-source">PDB: 1BNA · B-form DNA dodecamer</span>
   </footer>
 
-
-  <script type="module" src="dna.js?v=4"></script>
+  <script type="module" src="dna.js"></script>
 </body>
-
 </html>
