@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════
    DNA VIEWER — NeuroArt Research Lab
-   Virginia Tech Neuroscience
+   Virginia Tech Neuroscience babi123
    ═══════════════════════════════════════════════ */
 
    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap');
@@ -25,14 +25,14 @@
      --topbar-h:   56px;
      --footer-h:   44px;
    }
-   
+
    *, *::before, *::after { box-sizing: border-box; }
-   
+
    html, body {
      height: 100%;
      margin: 0;
    }
-   
+
    body {
      background: var(--bg);
      color: var(--text);
@@ -40,7 +40,7 @@
      font-size: 13px;
      overflow: hidden;
    }
-   
+
    /* ── TOPBAR ──────────────────────────────────── */
    .topbar {
      position: fixed;
@@ -55,26 +55,26 @@
      gap: 1.25rem;
      z-index: 200;
    }
-   
+
    .brand {
      display: flex;
      align-items: center;
      gap: .5rem;
      flex-shrink: 0;
    }
-   
+
    .brand-helix {
      font-size: 1.3rem;
      color: var(--accent);
      filter: drop-shadow(0 0 8px var(--accent));
      animation: pulse-glow 3s ease-in-out infinite;
    }
-   
+
    @keyframes pulse-glow {
      0%, 100% { filter: drop-shadow(0 0 6px var(--accent)); }
      50%       { filter: drop-shadow(0 0 14px var(--accent)); }
    }
-   
+
    .topbar h1 {
      margin: 0;
      font-family: var(--font-head);
@@ -84,13 +84,13 @@
      text-transform: uppercase;
      color: var(--text);
    }
-   
+
    .brand-sub {
      font-weight: 400;
      color: var(--muted);
      margin-left: 1px;
    }
-   
+
    /* Controls row */
    .controls {
      display: flex;
@@ -101,11 +101,11 @@
      overflow-x: auto;
      padding-bottom: 2px; /* prevent scrollbar clipping */
    }
-   
+
    .controls::-webkit-scrollbar { height: 3px; }
    .controls::-webkit-scrollbar-track { background: transparent; }
    .controls::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 2px; }
-   
+
    .btn-pill {
      display: flex;
      align-items: center;
@@ -122,27 +122,27 @@
      transition: color .2s, border-color .2s, background .2s;
      white-space: nowrap;
    }
-   
+
    .btn-pill:hover {
      color: var(--accent);
      border-color: var(--accent);
      background: var(--accent-dim);
    }
-   
+
    .control-group {
      display: flex;
      align-items: center;
      gap: .4rem;
      white-space: nowrap;
    }
-   
+
    .control-group label {
      font-size: .72rem;
      color: var(--muted);
      text-transform: uppercase;
      letter-spacing: .08em;
    }
-   
+
    .control-group select {
      background: var(--panel-2);
      color: var(--text);
@@ -159,13 +159,13 @@
      background-repeat: no-repeat;
      background-position: right .5rem center;
    }
-   
+
    .control-group select:hover,
    .control-group select:focus {
      border-color: var(--accent);
      outline: none;
    }
-   
+
    /* Toggle switch */
    .toggle-label {
      display: flex;
@@ -177,9 +177,9 @@
      white-space: nowrap;
      user-select: none;
    }
-   
+
    .toggle-label input[type="checkbox"] { display: none; }
-   
+
    .toggle-track {
      width: 32px;
      height: 18px;
@@ -189,7 +189,7 @@
      position: relative;
      transition: background .2s, border-color .2s;
    }
-   
+
    .toggle-thumb {
      position: absolute;
      top: 2px; left: 2px;
@@ -198,17 +198,17 @@
      background: var(--muted);
      transition: transform .2s, background .2s;
    }
-   
+
    .toggle-label input:checked ~ .toggle-track {
      background: var(--accent-dim);
      border-color: var(--accent);
    }
-   
+
    .toggle-label input:checked ~ .toggle-track .toggle-thumb {
      transform: translateX(14px);
      background: var(--accent);
    }
-   
+
    /* ── LAYOUT ──────────────────────────────────── */
    .layout {
      position: fixed;
@@ -216,14 +216,14 @@
      display: grid;
      grid-template-columns: 1fr 420px;
    }
-   
+
    /* ── VIEWER ──────────────────────────────────── */
    #viewer {
      width: 100%;
      height: 100%;
      position: relative;
    }
-   
+
    /* Loading overlay */
    #loading-overlay {
      position: absolute;
@@ -235,19 +235,19 @@
      z-index: 50;
      transition: opacity .6s ease;
    }
-   
+
    #loading-overlay.done {
      opacity: 0;
      pointer-events: none;
    }
-   
+
    .loader-wrap {
      display: flex;
      flex-direction: column;
      align-items: center;
      gap: 1.5rem;
    }
-   
+
    .loader-wrap p {
      color: var(--muted);
      font-size: .8rem;
@@ -255,18 +255,18 @@
      text-transform: uppercase;
      animation: blink 1.5s ease-in-out infinite;
    }
-   
+
    @keyframes blink {
      0%, 100% { opacity: .4; }
      50%       { opacity: 1; }
    }
-   
+
    .helix-loader {
      position: relative;
      width: 40px;
      height: 60px;
    }
-   
+
    .helix-strand {
      position: absolute;
      width: 8px;
@@ -274,19 +274,19 @@
      border-radius: 50%;
      top: 0; left: 16px;
    }
-   
+
    .strand-a {
      background: var(--accent);
      animation: helix-a 1.2s ease-in-out infinite;
      box-shadow: 0 0 10px var(--accent);
    }
-   
+
    .strand-b {
      background: var(--green);
      animation: helix-b 1.2s ease-in-out infinite;
      box-shadow: 0 0 10px var(--green);
    }
-   
+
    @keyframes helix-a {
      0%   { transform: translateY(0) translateX(0); }
      25%  { transform: translateY(13px) translateX(14px); }
@@ -294,7 +294,7 @@
      75%  { transform: translateY(39px) translateX(-14px); }
      100% { transform: translateY(52px) translateX(0); opacity:0; }
    }
-   
+
    @keyframes helix-b {
      0%   { transform: translateY(0) translateX(0); opacity:0; }
      25%  { transform: translateY(13px) translateX(-14px); opacity:1; }
@@ -302,7 +302,7 @@
      75%  { transform: translateY(39px) translateX(14px); }
      100% { transform: translateY(52px) translateX(0); }
    }
-   
+
    /* ── XYZ NAVIGATOR ───────────────────────────── */
    #xyz-nav {
      position: absolute;
@@ -318,13 +318,13 @@
      backdrop-filter: blur(12px);
      overflow: hidden;
    }
-   
+
    #orientation-canvas {
      width: 100%;
      height: 100%;
      display: block;
    }
-   
+
    /* ── ZOOM CONTROL ────────────────────────────── */
    #zoom-control {
      position: absolute;
@@ -339,7 +339,7 @@
      pointer-events: auto;
      isolation: isolate;
    }
-   
+
    .zoom-btn {
      width: 28px;
      height: 28px;
@@ -357,18 +357,18 @@
      transition: color .15s, border-color .15s, background .15s;
      font-family: var(--font-mono);
    }
-   
+
    .zoom-btn:hover {
      color: var(--accent);
      border-color: var(--accent);
      background: var(--accent-dim);
    }
-   
+
    .zoom-btn:active {
      background: rgba(91,138,255,0.25);
    }
-   
-   
+
+
    /* ── LEGEND (dynamic color key — stacks below chem-legend) ── */
    .legend {
      position: absolute;
@@ -386,9 +386,9 @@
      /* Default stacking position — chem-legend is ~110px tall + 14px top + 8px gap */
      margin-top: 0;
    }
-   
+
    .legend.hidden { opacity: 0; pointer-events: none; }
-   
+
    .legend-title {
      font-size: .68rem;
      text-transform: uppercase;
@@ -396,7 +396,7 @@
      color: var(--muted);
      margin-bottom: .5rem;
    }
-   
+
    .legend-item {
      display: flex;
      align-items: center;
@@ -405,13 +405,13 @@
      font-size: .78rem;
      color: var(--text);
    }
-   
+
    .legend-chip {
      width: 10px; height: 10px;
      border-radius: 50%;
      flex-shrink: 0;
    }
-   
+
    /* ── INFO PANEL ──────────────────────────────── */
    #info {
      border-left: 1px solid var(--border);
@@ -420,7 +420,7 @@
      display: flex;
      flex-direction: column;
    }
-   
+
    .info-header {
      display: flex;
      align-items: center;
@@ -432,7 +432,7 @@
      background: var(--panel);
      z-index: 5;
    }
-   
+
    .info-header h2 {
      margin: 0;
      font-family: var(--font-head);
@@ -442,7 +442,7 @@
      letter-spacing: .1em;
      color: var(--muted);
    }
-   
+
    .info-badge {
      font-size: .7rem;
      font-family: var(--font-mono);
@@ -454,7 +454,7 @@
      letter-spacing: .05em;
      transition: all .3s;
    }
-   
+
    /* Empty state */
    .empty-state {
      display: flex;
@@ -466,29 +466,29 @@
      gap: 1rem;
      color: var(--muted);
    }
-   
+
    .empty-icon {
      opacity: .35;
    }
-   
+
    .empty-state p {
      margin: 0;
      font-size: .82rem;
      line-height: 1.6;
    }
-   
+
    /* Info content */
    #info-content {
      flex: 1;
    }
-   
+
    .info-section {
      padding: .85rem 1rem;
      border-bottom: 1px solid var(--border);
    }
-   
+
    .info-section:last-child { border-bottom: none; }
-   
+
    .info-label {
      font-size: .65rem;
      text-transform: uppercase;
@@ -496,35 +496,35 @@
      color: var(--muted);
      margin-bottom: .35rem;
    }
-   
+
    .info-value {
      font-size: .88rem;
      color: var(--text);
      line-height: 1.5;
    }
-   
+
    .info-value.large {
      font-family: var(--font-head);
      font-size: 1.15rem;
      font-weight: 600;
      color: #fff;
    }
-   
+
    .info-value.mono {
      font-family: var(--font-mono);
      font-size: .82rem;
    }
-   
+
    .info-value.accent { color: var(--accent); }
    .info-value.green  { color: var(--green); }
    .info-value.amber  { color: var(--amber); }
-   
+
    /* Description block */
    .desc-block {
      padding: .85rem 1rem;
      border-bottom: 1px solid var(--border);
    }
-   
+
    .desc-label {
      font-size: .65rem;
      text-transform: uppercase;
@@ -532,7 +532,7 @@
      color: var(--muted);
      margin-bottom: .5rem;
    }
-   
+
    .desc-text {
      font-size: .8rem;
      line-height: 1.7;
@@ -540,7 +540,7 @@
      font-family: 'Syne', sans-serif;
      font-weight: 400;
    }
-   
+
    /* Pair info */
    .pair-indicator {
      display: flex;
@@ -548,7 +548,7 @@
      gap: .5rem;
      font-size: .82rem;
    }
-   
+
    .pair-base {
      display: inline-flex;
      align-items: center;
@@ -559,26 +559,26 @@
      font-weight: 700;
      font-size: .9rem;
    }
-   
+
    .base-A { background: rgba(255,107,107,0.15); color: #ff6b6b; border: 1px solid rgba(255,107,107,0.3); }
    .base-T { background: rgba(91,138,255,0.15);  color: #5b8aff; border: 1px solid rgba(91,138,255,0.3); }
    .base-G { background: rgba(61,255,160,0.15);  color: #3dffa0; border: 1px solid rgba(61,255,160,0.3); }
    .base-C { background: rgba(255,209,102,0.15); color: #ffd166; border: 1px solid rgba(255,209,102,0.3); }
-   
+
    .pair-arrow {
      color: var(--muted);
      font-size: .9rem;
    }
-   
+
    /* Measure */
    #measure-section {
      padding: .85rem 1rem 1rem;
      border-top: 1px solid var(--border);
      margin-top: auto;
    }
-   
+
    #measure-section.hidden { display: none; }
-   
+
    .btn-measure {
      width: 100%;
      display: flex;
@@ -596,12 +596,12 @@
      letter-spacing: .03em;
      transition: all .2s;
    }
-   
+
    .btn-measure:hover {
      background: rgba(91,138,255,0.2);
      border-color: var(--accent);
    }
-   
+
    .measure-result {
      margin-top: .6rem;
      background: var(--panel-2);
@@ -614,14 +614,14 @@
      text-align: center;
      animation: fade-in .3s ease;
    }
-   
+
    .measure-result.hidden { display: none; }
-   
+
    @keyframes fade-in {
      from { opacity: 0; transform: translateY(4px); }
      to   { opacity: 1; transform: translateY(0); }
    }
-   
+
    /* ── FOOTER ──────────────────────────────────── */
    .footer {
      position: fixed;
@@ -637,15 +637,15 @@
      background: var(--panel);
      letter-spacing: .04em;
    }
-   
+
    .footer-dot { opacity: .35; }
-   
+
    .footer-source {
      margin-left: 1rem;
      color: rgba(91,138,255,0.6);
      font-size: .7rem;
    }
-   
+
    /* ── TOPBAR DIVIDER ──────────────────────────── */
    .topbar-divider {
      width: 1px;
@@ -653,7 +653,7 @@
      background: var(--border-2);
      flex-shrink: 0;
    }
-   
+
    /* ── CHEMICAL ANATOMY LEGEND ─────────────────── */
    #chem-legend {
      position: absolute;
@@ -667,7 +667,7 @@
      backdrop-filter: blur(10px);
      pointer-events: none;
    }
-   
+
    .chem-legend-title {
      font-size: .62rem;
      text-transform: uppercase;
@@ -675,7 +675,7 @@
      color: var(--muted);
      margin-bottom: .45rem;
    }
-   
+
    .chem-legend-grid {
      display: grid;
      grid-template-columns: 10px 1fr;
@@ -684,14 +684,14 @@
      font-size: .75rem;
      color: #b0bcd4;
    }
-   
+
    .chem-chip {
      width: 9px;
      height: 9px;
      border-radius: 50%;
      display: block;
    }
-   
+
    /* ── BASE SVG DIAGRAM ────────────────────────── */
    .base-diagram-wrap {
      padding: .85rem 1rem .5rem;
@@ -700,17 +700,17 @@
      align-items: center;
      gap: .9rem;
    }
-   
+
    .base-diagram-svg {
      flex-shrink: 0;
      width: 80px;
      height: 80px;
    }
-   
+
    .base-diagram-meta {
      flex: 1;
    }
-   
+
    .base-diagram-name {
      font-family: var(--font-head);
      font-weight: 700;
@@ -720,7 +720,7 @@
      word-break: break-word;
      overflow-wrap: break-word;
    }
-   
+
    .base-diagram-type {
      font-size: .72rem;
      color: var(--muted);
@@ -728,7 +728,7 @@
      letter-spacing: .08em;
      margin-top: .2rem;
    }
-   
+
    /* ── HBOND / GROOVE STATUS PILL ──────────────── */
    .feature-pills {
      display: flex;
@@ -737,7 +737,7 @@
      border-bottom: 1px solid var(--border);
      flex-wrap: wrap;
    }
-   
+
    .feature-pill {
      font-size: .68rem;
      padding: .15rem .5rem;
@@ -745,34 +745,34 @@
      border: 1px solid;
      letter-spacing: .05em;
    }
-   
+
    .feature-pill.hbond {
      color: #a8d8ff;
      border-color: rgba(168,216,255,0.3);
      background: rgba(168,216,255,0.08);
    }
-   
+
    .feature-pill.groove {
      color: #b0ff90;
      border-color: rgba(176,255,144,0.3);
      background: rgba(176,255,144,0.08);
    }
-   
+
    /* ── RESPONSIVE ──────────────────────────────── */
    @media (max-width: 900px) {
      .layout {
        grid-template-columns: 1fr;
        grid-template-rows: 60vh 1fr;
      }
-   
+
      #info {
        border-left: none;
        border-top: 1px solid var(--border);
      }
-   
+
      .footer-source { display: none; }
    }
-   
+
    @media (max-width: 600px) {
      .controls { gap: .5rem; }
      .control-group label { display: none; }
