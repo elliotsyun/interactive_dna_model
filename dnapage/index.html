@@ -1,15 +1,19 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Interactive DNA — NeuroArt Research Lab</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="dna.css" />
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <script src="https://3dmol.org/build/3Dmol-min.js"></script>
 </head>
+
 <body>
   <header class="topbar" role="banner">
     <div class="brand">
@@ -18,7 +22,10 @@
     </div>
     <div class="controls">
       <button id="btn-reset" title="Smooth reset view" class="btn-pill">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+          <path d="M3 3v5h5" />
+        </svg>
         Reset
       </button>
       <div class="control-group">
@@ -65,8 +72,102 @@
         <span class="toggle-track"><span class="toggle-thumb"></span></span>
         <span>Water</span>
       </label>
+      <div class="topbar-divider"></div>
+      <button id="btn-quiz" class="btn-pill btn-quiz-launch" title="Test your clinical neuroscience knowledge">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+          <path d="M12 17h.01" />
+        </svg>
+        Quiz
+      </button>
     </div>
   </header>
+
+  <!-- ── QUIZ MODAL ─────────────────────────────────────────── -->
+  <div id="quiz-modal" class="quiz-modal" role="dialog" aria-modal="true" aria-label="Clinical Neuroscience Quiz"
+    hidden>
+    <div class="quiz-backdrop"></div>
+    <div class="quiz-panel">
+      <!-- Start screen -->
+      <div id="quiz-start" class="quiz-screen">
+        <button class="quiz-close" id="quiz-close-start" aria-label="Close quiz">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg>
+        </button>
+        <div class="quiz-start-icon">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path
+              d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46L7 19H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h3l-.04-.54A2.5 2.5 0 0 1 9.5 2Z" />
+            <path
+              d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46L17 19h3a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3l.04-.54A2.5 2.5 0 0 0 14.5 2Z" />
+          </svg>
+        </div>
+        <h2 class="quiz-title">Clinical Neuroscience Quiz</h2>
+        <p class="quiz-subtitle">20 questions spanning DNA structure, epigenetics, neurogenetics, gene therapy &amp;
+          neuro-oncology.</p>
+        <div class="quiz-filter-row">
+          <label class="quiz-filter-label">Category</label>
+          <select id="quiz-category-filter" class="quiz-select"></select>
+          <label class="quiz-filter-label">Difficulty</label>
+          <select id="quiz-difficulty-filter" class="quiz-select">
+            <option value="all">All</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+        <button id="quiz-begin-btn" class="quiz-btn-primary">Begin Quiz</button>
+      </div>
+
+      <!-- Question screen -->
+      <div id="quiz-question" class="quiz-screen" hidden>
+        <div class="quiz-toprow">
+          <div class="quiz-progress-wrap">
+            <div class="quiz-progress-bar">
+              <div id="quiz-progress-fill"></div>
+            </div>
+            <span id="quiz-progress-label" class="quiz-progress-label">1 / 10</span>
+          </div>
+          <div id="quiz-score-live" class="quiz-score-live">Score: 0</div>
+          <button class="quiz-close" id="quiz-close-q" aria-label="Close quiz">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="quiz-meta-row">
+          <span id="quiz-category-badge" class="quiz-category-badge"></span>
+          <span id="quiz-difficulty-badge" class="quiz-difficulty-badge"></span>
+        </div>
+        <p id="quiz-question-text" class="quiz-question-text"></p>
+        <div id="quiz-options" class="quiz-options"></div>
+        <div id="quiz-explanation" class="quiz-explanation hidden"></div>
+        <button id="quiz-next-btn" class="quiz-btn-primary quiz-next hidden">Next →</button>
+      </div>
+
+      <!-- Results screen -->
+      <div id="quiz-results" class="quiz-screen" hidden>
+        <button class="quiz-close" id="quiz-close-r" aria-label="Close quiz">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg>
+        </button>
+        <div class="quiz-result-ring-wrap">
+          <canvas id="quiz-result-ring" width="120" height="120"></canvas>
+          <div class="quiz-result-percent" id="quiz-result-percent"></div>
+        </div>
+        <h2 id="quiz-result-headline" class="quiz-result-headline"></h2>
+        <p id="quiz-result-sub" class="quiz-result-sub"></p>
+        <div id="quiz-result-breakdown" class="quiz-result-breakdown"></div>
+        <div class="quiz-result-btns">
+          <button id="quiz-retry-btn" class="quiz-btn-secondary">Try Again</button>
+          <button id="quiz-done-btn" class="quiz-btn-primary">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <main class="layout">
     <div id="viewer">
@@ -74,7 +175,7 @@
         <canvas id="orientation-canvas" width="72" height="72"></canvas>
       </div>
       <div id="zoom-control">
-        <button id="zoom-in"  class="zoom-btn" title="Zoom in">+</button>
+        <button id="zoom-in" class="zoom-btn" title="Zoom in">+</button>
         <button id="zoom-out" class="zoom-btn" title="Zoom out">−</button>
       </div>
       <div id="chem-legend">
@@ -110,7 +211,9 @@
         <div class="empty-state">
           <div class="empty-icon">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v3M11 14h.01"/>
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+              <path d="M11 8v3M11 14h.01" />
             </svg>
           </div>
           <p>Click any atom in the model to inspect it.</p>
@@ -118,7 +221,9 @@
       </div>
       <div id="measure-section" class="hidden">
         <button id="btn-measure" class="btn-measure">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v20M2 12h20" />
+          </svg>
           Measure to Helix Center
         </button>
         <div id="measure-result" class="measure-result hidden"></div>
@@ -135,4 +240,5 @@
 
   <script type="module" src="dna.js"></script>
 </body>
+
 </html>
